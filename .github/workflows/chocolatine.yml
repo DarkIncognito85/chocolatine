@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Check coding style
       run: |
-        check.sh $(pwd) $(pwd) > coding-style-report.log
+        check.sh $(pwd) $(pwd)
 
   check_program_compilation:
     needs: check_coding_style
@@ -34,7 +34,7 @@ jobs:
     - name: Check executables
       run: |
         for file in ${{ env.EXECUTABLES }}; do
-          if [ ! -x "$file" ]; then
+          if [ ! -x "${{ env.EXECUTABLES }}" ]; then
             echo "Executable $file not found or not executable"
             exit 1
           fi
