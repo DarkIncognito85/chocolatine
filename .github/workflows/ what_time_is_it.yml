@@ -1,0 +1,12 @@
+name: Chocolatine
+
+on:
+  push:
+jobs:
+  date:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: date
+      run: |
+        date
