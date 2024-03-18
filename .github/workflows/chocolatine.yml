@@ -1,0 +1,51 @@
+name: Chocolatine
+
+on:
+  push:
+    branches-ignore:
+      - 'ga-ignore-*'
+  pull_request:
+    branches-ignore:
+      - 'ga-ignore-*'
+
+env:
+  EXECUTABLES: 'chocolatine'
+
+jobs:
+  check_coding_style:
+    runs-on: ubuntu-latest
+    container: ghcr.io/epitech/coding-style-checker:latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check coding style
+      run: |
+        check.sh $(pwd) $(pwd) > coding-style-report.log
+
+  check_program_compilation:
+    needs: check_coding_style
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
+    steps:
+    - uses: actions/checkout@v2
+    - name: Compile program
+      run: |
+        make
+        make clean
+    - name: Check executables
+      run: |
+        for file in ${{ env.EXECUTABLES }}; do
+          if [ ! -x "$file" ]; then
+            echo "Executable $file not found or not executable"
+            exit 1
+          fi
+        done
+
+  run_tests:
+    needs: check_program_compilation
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run tests
+      run: |
+        make tests_run
