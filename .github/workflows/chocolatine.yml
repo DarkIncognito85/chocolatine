@@ -14,17 +14,24 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/epitech/coding-style-checker:latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Check coding style
       run: |
-        check.sh $(pwd) $(pwd)
-
+          check.sh $(pwd) $(pwd)
+          while IFS=: read -r file line type msg; do
+            echo "::error file=${file#./},line=$line,title=$type::$msg"
+          done < $(pwd)/coding-style-reports.log
+          if [ -s $(pwd)/coding-style-reports.log ]; then
+            exit 1
+          else
+            echo "No coding style errors detected"
+          fi
   check_program_compilation:
     needs: check_coding_style
     runs-on: ubuntu-latest
     container: epitechcontent/epitest-docker
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Compile program
       run: |
         make
@@ -43,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     container: epitechcontent/epitest-docker
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Run tests
       run: |
         make tests_run
@@ -61,5 +68,4 @@ jobs:
               target_repo_url:
                 ${{ env.MIRROR_URL }}
               ssh_private_key:
-                ${{ secrets.SSH_PRIVATE_KEY }}
-  
+                ${{ secrets.GIT_SSH_PRIVATE_KEY }}
