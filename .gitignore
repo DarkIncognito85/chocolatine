@@ -1,3 +1,5 @@
 chocolatine
 my_tests
 *.o
+/src
+/tmp
