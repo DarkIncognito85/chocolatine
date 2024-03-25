@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2023
 ** chocolatine
 ** File description:
-** main.c
+** 
 */
 #include <stdio.h>
 
