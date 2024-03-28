@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2023
 ** chocolatine
 ** File description:
-** hello world
+** hello worldd
 */
 #include <stdio.h>
 
