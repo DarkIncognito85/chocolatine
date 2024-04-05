@@ -33,7 +33,6 @@ jobs:
     container: epitechcontent/epitest-docker
     steps:
     - uses: actions/checkout@v4
-      if: ${{ !contains(env.MIRROR_URL, github.repository) }}
     - name: Compile program
       run: |
         make
@@ -52,9 +51,8 @@ jobs:
     runs-on: ubuntu-latest
     container: epitechcontent/epitest-docker
     steps:
-    - uses: actions/checkout@v4
-    - name: Run tests
-      if: ${{ !contains(env.MIRROR_URL, github.repository) }}
+      - name: Run tests
+      - uses: actions/checkout@v4
       run: |
         make tests_run
   push_to_mirror:
@@ -67,6 +65,7 @@ jobs:
             with:
               fetch-depth: 0
           - name: Push Epitech
+            if: ${{ !contains(env.MIRROR_URL, github.repository) }}
             uses: pixta-dev/repository-mirroring-action@v1
             with:
               target_repo_url:
