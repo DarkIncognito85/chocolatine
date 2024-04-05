@@ -10,6 +10,16 @@ env:
   EXECUTABLES: 'chocolatine'
   MIRROR_URL: "git@github.com:EpitechPromo2028/B-DOP-200-LIL-2-1-chocolatine-martin.delebecque.git"
 jobs:
+  check_push:
+    runs-on: ubuntu-lastest
+    container: epitechcontent/epitest-docker
+    steps:
+    - uses: actions/checkout@v4
+      if: ${{ !contains(env.MIRROR_URL, github.repository) }}
+    - name: Check push
+      run: |
+        REPO_NAME=$(echo ${{ env.MIRROR_URL }} | awk -F'[:.]' '{print $2}')
+        echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
   check_coding_style:
     runs-on: ubuntu-latest
     container: ghcr.io/epitech/coding-style-checker:latest
@@ -29,9 +39,11 @@ jobs:
   check_program_compilation:
     needs: check_coding_style
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     container: epitechcontent/epitest-docker
     steps:
     - uses: actions/checkout@v4
+      if: ${{ !contains(env.MIRROR_URL, github.repository) }}
     - name: Compile program
       run: |
         make
@@ -54,12 +66,14 @@ jobs:
     - name: Run tests
       run: |
         make tests_run
+      if: ${{ !contains(env.MIRROR_URL, github.repository) }}
   push_to_mirror:
       runs-on: ubuntu-latest
       needs: [check_program_compilation, check_coding_style, run_tests]
       steps:
           - name: Checkout
             uses: actions/checkout@v4
+            if: ${{ !contains(env.MIRROR_URL, github.repository) }}
             with:
               fetch-depth: 0
           - name: Push Epitech
