@@ -27,7 +27,7 @@ jobs:
           exit 1
         else
           echo "No coding style errors detected"
-
+        fi
   check_program_compilation:
     needs: check_coding_style
     runs-on: ubuntu-latest
